@@ -3,11 +3,10 @@
 #
 FROM        alpine:3.6
 LABEL       vendor="jack6.liu"
-COPY        etc/main.cf /main.cf
-RUN         apk update &&                   \
-            apk --no-cache add postfix &&   \
-            rm -f /etc/postfix/main.cf &&   \
-            mv /main.cf /etc/postfix/ &&    \
+COPY        script/start_postfix.sh /usr/bin/
+RUN         apk update &&                                 \
+            apk --no-cache add bash postfix rsyslog &&    \
+            chmod +x /usr/bin/start_postfix.sh &&         \
             rm -rf /var/cache/apk/*
 EXPOSE      25
-ENTRYPOINT  ["postfix", "start"]
+ENTRYPOINT  ["/usr/bin/start_postfix.sh"]
